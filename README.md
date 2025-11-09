@@ -106,10 +106,18 @@ Content-Type: application/json
 Response:
 ```json
 {
-  "recommendations": [
+  "recommended_assessments": [
     {
-      "assessment_name": "Assessment Name",
-      "assessment_url": "https://www.shl.com/products/..."
+      "url": "https://www.shl.com/solutions/products/product-catalog/view/assessment-name/",
+      "name": "Assessment Name",
+      "adaptive_support": "No",
+      "description": "Assessment: Assessment Name",
+      "duration": null,
+      "remote_support": "Yes",
+      "test_type": [
+        "Personality & Behaviour",
+        "Knowledge & Skills"
+      ]
     },
     ...
   ]
@@ -199,4 +207,5 @@ web: python api.py
 ## License
 
 This project is for assessment purposes.
+
 
