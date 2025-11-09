@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHL Assessment Recommendation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .results-header {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .results-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .results-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .results-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .results-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .results-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .assessment-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .assessment-link:hover {
+            text-decoration: underline;
+        }
+        
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #c33;
+        }
+        
+        .info {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1976d2;
+        }
+        
+        .api-config {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .api-config label {
+            margin-bottom: 5px;
+        }
+        
+        .api-config input {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SHL Assessment Recommendation System</h1>
+            <p>Find the perfect assessments for your hiring needs</p>
+        </div>
+        
+        <div class="content">
+            <div class="info">
+                <strong>How to use:</strong> Enter a natural language query describing your hiring needs, or paste a job description URL. The system will recommend 5-10 relevant SHL assessments.
+            </div>
+            
+            <div class="api-config">
+                <label for="apiUrl">API Base URL:</label>
+                <input type="text" id="apiUrl" placeholder="http://localhost:8000" value="">
+                <small style="color: #666;">Leave empty to use current origin</small>
+            </div>
+            
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="query">Query / Job Description:</label>
+                    <textarea id="query" placeholder="e.g., I am hiring for Java developers who can also collaborate effectively with my business teams."></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <label for="url">Or Job Description URL (optional):</label>
+                    <input type="text" id="url" placeholder="https://example.com/job-description">
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="getRecommendations()">Get Recommendations</button>
+                    <button class="btn-secondary" onclick="clearResults()">Clear</button>
+                </div>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Finding the best assessments for you...</p>
+            </div>
+            
+            <div id="error" class="error" style="display: none;"></div>
+            
+            <div id="results" class="results-section" style="display: none;">
+                <h2 class="results-header">Recommended Assessments</h2>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Assessment Name</th>
+                            <th>Test Type</th>
+                            <th>Description</th>
+                            <th>Duration</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function getRecommendations() {
+            let apiUrl = document.getElementById('apiUrl').value.trim();
+            const query = document.getElementById('query').value.trim();
+            const url = document.getElementById('url').value.trim();
+            
+            if (!query && !url) {
+                showError('Please enter a query or URL');
+                return;
+            }
+            
+            // Use current origin if API URL is empty
+            if (!apiUrl) {
+                apiUrl = window.location.origin;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('results').style.display = 'none';
+            
+            try {
+                const requestBody = {};
+                if (query) requestBody.query = query;
+                if (url) requestBody.url = url;
+                
+                const response = await fetch(`${apiUrl}/recommend`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Failed to get recommendations');
+                }
+                
+                const data = await response.json();
+                displayResults(data.recommended_assessments);
+                
+            } catch (error) {
+                showError(`Error: ${error.message}`);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+        
+        function displayResults(recommendations) {
+            const tbody = document.getElementById('resultsBody');
+            tbody.innerHTML = '';
+            
+            recommendations.forEach((rec, index) => {
+                const testTypes = rec.test_type ? rec.test_type.join(', ') : 'N/A';
+                const description = rec.description ? 
+                    (rec.description.length > 100 ? rec.description.substring(0, 100) + '...' : rec.description) : 
+                    'N/A';
+                const duration = rec.duration ? `${rec.duration} min` : 'N/A';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${rec.name}</strong></td>
+                    <td><span style="font-size: 0.9em; color: #667eea;">${testTypes}</span></td>
+                    <td style="font-size: 0.9em; max-width: 300px;">${description}</td>
+                    <td>${duration}</td>
+                    <td><a href="${rec.url}" target="_blank" class="assessment-link">View</a></td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        function clearResults() {
+            document.getElementById('query').value = '';
+            document.getElementById('url').value = '';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('query').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                getRecommendations();
+            }
+        });
+    </script>
+</body>
+</html>
+

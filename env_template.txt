@@ -1,0 +1,10 @@
+# SHL Recommender Environment Variables Template
+# Copy this to .env file in the same directory
+
+# Get your Gemini API key from: https://makersuite.google.com/app/apikey
+# Or: https://aistudio.google.com/app/apikey
+GEMINI_API_KEY=your_api_key_here
+
+# Optional: Set to 'false' to disable LLM re-ranking
+USE_LLM_RERANKING=true
+
